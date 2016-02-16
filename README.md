@@ -1,11 +1,136 @@
 # listnr-server-sample-py
 
+[日本語版](#listnr-server-sample-py-1)
+
+This is a sample server for audio destination of Listnr.
+
+* [Listnr product page](https://listnr.cerevo.com/en)
+* Please refer to the [Online manual](https://listnr.cerevo.com/en/doc/) for how to setup Listnr.
+* Please refer to [Information for developers](https://listnr.cerevo.com/en/developers/) for more information.
+* This sample is for Python 2.7.
+
+## Accept audio upload
+
+* The sample program is in the “simple” directory.
+
+### Installing dependencies
+
+```
+cd simple
+pip install -r requirements.txt
+```
+
+### Running server
+
+* Run server.
+
+```
+python server.py
+```
+
+* Open http://localhost:8080/ with a browser.
+
+* Open another terminal and test audio upload.
+
+```
+cd audio_sample
+curl -H "Transfer-Encoding: chunked" -X POST http://localhost:8080/wave -F "file=@sample.r16;type=application/octet-stream"
+```
+
+* Reload the page opened with a browser, then you will see the uploaded file.
+
+![Simple page](/../assets/screenshot_simple.png?raw=true)
+
+
+## Speech to text
+
+### Installing dependencies
+
+```
+cd speech_to_text
+pip install -r requirements.txt
+```
+
+### Create an account for a speech-to-text service
+
+* This sample uses [IBM Bluemix Speech To Text](https://console.ng.bluemix.net/catalog/services/speech-to-text/) .
+* Please create an account and get a username and password.
+* Add your username and password in speech_to_text/config.ini.
+
+
+### Running server
+
+* Run server.
+
+```
+python server.py
+```
+
+* Open http://localhost:8080/ with a browser.
+
+* Open another terminal and test audio upload.
+
+```
+cd audio_sample
+curl -H "Transfer-Encoding: chunked" -X POST http://localhost:8080/wave -F "file=@sample.r16;type=application/octet-stream"
+```
+
+* Reload the page opened with browser, then you will see the uploaded file.
+
+![Speech-to-text page](/../assets/screenshot_speech_to_text.png?raw=true)
+
+
+### Initializing database
+
+* Results are saved in textlog.sqlite3.
+* To initialize the database, execute following command.
+
+```
+cd speech_to_text
+sqlite3 textlog.sqlite3 < initdb.sql
+```
+
+
+## How to change the audio destination URL of Listnr.
+
+* Select “Settings” in the navigation menu of the Listnr app.
+* Select your Listnr in the “My Listnr” section to open “Listnr settings”.
+* Select “Audio destination”.
+* Select “Custom”.
+* Input URL.
+  * e.g. http://192.168.0.10:8080/wave
+* Set “Recording time” if you want.
+* Press the back button to return to “Listnr settings”.
+* Make a sound to get Listnr to start audio uploading. Then Listnr will configure the new settings.
+  * Listnr also configures new settings by powering off and on.
+
+
+## How to create an audio file for testing
+
+* Listnr uploads headerless linear PCM data.
+  * Sample rate: 16kHz
+  * Sample size: 16bit
+  * Channels: 1
+
+### Using SoX - Sound eXchange
+
+* Install SoX from http://sox.sourceforge.net/ .
+* To convert an mp3 file, execute the following command.
+
+```
+sox sample.mp3 -b 16 -c 1 -r 16000 -t raw sample.r16
+```
+
+
+
+# listnr-server-sample-py
+
 Listnrの音声アップロードを受け付けるサーバーのサンプルプログラムです。
 
 * [Listnr製品ページ](https://listnr.cerevo.com/ja)
 * [オンラインマニュアル](https://listnr.cerevo.com/ja/doc/) を参考に、Listnrをセットアップした上でご利用ください。
 * [開発者向け情報](https://listnr.cerevo.com/ja/developers/) も合わせてご参照ください。
-* Python 2.7.10 で動作確認しています。
+* Python 2.7 で動作確認しています。
 
 ## 音声アップロードを受け付ける
 
@@ -93,7 +218,7 @@ sqlite3 textlog.sqlite3 < initdb.sql
 * 音声アップロード先URLにURLを入力します。
   * 例: http://192.168.0.10:8080/wave
 * 必要に応じて録音時間を設定します。
-* 戻るボタンをおし、各種設定画面まで戻ります。
+* 戻るボタンを押し、Listnr設定画面に戻ります。
 * Listnrに音を聞かせて、一度集音させます。これにより設定が反映されます。
   * 電源をオフ・オンすることでも設定が反映されます。
 
